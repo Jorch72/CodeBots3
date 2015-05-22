@@ -1,0 +1,8 @@
+Move C
+Rotate 2
+$Loop Copy 5 D
+Flag
+If C=A $Loop #7
+Start C
+Stop D //Comment
+Lock B
