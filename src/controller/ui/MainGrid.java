@@ -15,7 +15,7 @@ public class MainGrid extends JPanel {
     public final static int squareHeight = 9;
     private Map<String, Character> botSymbols;
     private Map<Point, Color> highlights;
-    private final Game game;
+    private Game game;
     public MainGrid(Game game){
         this.game = game;
         Dimension size = new Dimension(game.getMap().getWidth()*squareWidth, game.getMap().getHeight()*squareHeight);
@@ -69,6 +69,10 @@ public class MainGrid extends JPanel {
         }
     }
 
+    public void setGame(Game currentGame){
+        this.game = currentGame;
+    }
+
     public void addHighlight(int x, int y, Color color){
         highlights.put(new Point(x, y), color);
     }
@@ -79,15 +83,16 @@ public class MainGrid extends JPanel {
         for (int i = 0; i < game.getMap().getWidth(); i++) {
             for (int j = 0; j< game.getMap().getHeight(); j++){
                 Point position = new Point(i, j);
-                if (!game.getMap().botAt(position))
-                    continue;
                 CodeBot b = game.getMap().getBot(position);
+                if (b == null)
+                    continue;
+                String name = b.getPrototype().getName();
                 if (highlights.containsKey(position)){
                     g.setColor(highlights.remove(position));
                 } else {
                     g.setColor(Color.black);
                 }
-                g.drawString(botSymbols.get(b.getPrototype().getName())+"", i*squareWidth, j*squareHeight+squareHeight);
+                g.drawString(botSymbols.get(name)+"", i*squareWidth, j*squareHeight+squareHeight);
             }
         }
     }

@@ -10,24 +10,23 @@ public class Game {
     public final static int NUM_VARS = 4;
     public final static int MAX_TURNS = 5000;
     public final static int BOT_COPIES = 50;
+    public final static int NUM_GAMES = 5;
 
     private int turnCounter = 0;
 
     private final HashMap<Command.Type, List<Command>> tasks;
     private final List<CodeBot> allBots;
-    private final PriorityQueue<Command.Type> taskQueue;
+    private final SortedSet<Command.Type> taskQueue;
 
     private final Map map;
-
-    private final Scoreboard scoreboard;
 
     public boolean registered;
 
 
 
 
-    public Game(Random random, Scoreboard scoreboard){
-        taskQueue = new PriorityQueue<Command.Type>();
+    public Game(Random random){
+        taskQueue = new TreeSet<Command.Type>();
 
         tasks = new HashMap<Command.Type, List<Command>>();
         for (Command.Type type: Command.Type.values()){
@@ -43,45 +42,43 @@ public class Game {
         }
 
         map = new Map(this, random);
-        this.scoreboard = scoreboard;
         registered = false;
     }
 
     public void step(){
-        if (isFinished()){
-            if (!registered) {
-                scoreboard.finished();
-            } else {
-                registered = true;
+        for (CodeBot codeBot:allBots){
+            for (BotThread thread: codeBot.getThreads()){
+                try {
+                    thread.addToExecution();
+                } catch (AccessException e){}
             }
         }
-        if (taskQueue.isEmpty()){
-            for (CodeBot codeBot:allBots){
-                for (BotThread thread: codeBot.getThreads()){
-                    try {
-                        thread.increment();
-                    } catch (AccessException e){}
+        while (!taskQueue.isEmpty()) {
+            Command.Type task = taskQueue.first();
+            taskQueue.remove(task);
+            List<Command> nextCommands = new ArrayList<Command>(tasks.get(task));
+            tasks.get(task).clear();
+            for (Command command : nextCommands) {
+                try {
+                    command.execute();
+                } catch (AccessException e) {
                 }
             }
-        } else {
-            while (!taskQueue.isEmpty()) {
-                Command.Type task = taskQueue.poll();
-                List<Command> nextCommands = new ArrayList<Command>(tasks.get(task));
-                for (Command command : nextCommands) {
-                    try {
-                        command.execute();
-                    } catch (AccessException e) {
-                    }
-                }
-                for (CodeBot bot: allBots){
-                    bot.resolve(task);
-                }
-                if (task.equals(Command.Type.Move)){
-                    getMap().resolveMovement();
-                }
+            for (CodeBot bot: allBots){
+                bot.resolve(task);
+            }
+            if (task.equals(Command.Type.Move)){
+                getMap().resolveMovement();
             }
         }
         turnCounter++;
+        for (CodeBot codeBot:allBots){
+            for (BotThread thread: codeBot.getThreads()){
+                try {
+                    thread.increment();
+                } catch (AccessException e){}
+            }
+        }
     }
 
     public boolean isFinished(){
@@ -106,8 +103,5 @@ public class Game {
         return map;
     }
 
-    public Scoreboard getScoreboard() {
-        return scoreboard;
-    }
 
 }

@@ -1,6 +1,7 @@
 package controller.ui;
 
 import controller.Game;
+import controller.Scoreboard;
 import controller.bot.CodeBot;
 
 import javax.swing.*;
@@ -9,32 +10,29 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class MainWindow extends JFrame {
     private List<BotWindow> windows;
     private final MainGrid mainGrid;
-    private final JMenuBar menu;
-    private final JButton start;
-    private final JButton stop;
-    private final JButton step;
-    private final JButton quit;
-    private final JButton finish;
     private final JTextArea turnNumber;
     private BotRunner runner;
-    private final Game game;
-    public MainWindow(Game game){
+    private final Random random;
+    private Game currentGame;
+    public MainWindow(Random random){
         super();
-        this.game = game;
+        currentGame = new Game(random);
+        Scoreboard.gameStarted();
+        this.random = random;
         this.setLayout(new GridLayout());
-        mainGrid = new MainGrid(game);
+        mainGrid = new MainGrid(currentGame);
         this.add(mainGrid);
-        menu = new JMenuBar();
+        JMenuBar menu = new JMenuBar();
         this.setJMenuBar(menu);
-        start = new JButton("Start");
-        stop = new JButton("Stop");
-        step = new JButton("Step");
-        quit = new JButton("Quit");
-        finish = new JButton("End of Games");
+        JButton start = new JButton("Run");
+        JButton stop = new JButton("Stop");
+        JButton step = new JButton("Step");
+        JButton quit = new JButton("Quit");
         menu.add("Start", start);
         menu.add("Stop", step);
         menu.add("Step", stop);
@@ -60,7 +58,8 @@ public class MainWindow extends JFrame {
         step.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed (ActionEvent e) {
-                MainWindow.this.game.step();
+                MainWindow.this.currentGame.step();
+                runner.cancel(true);
                 repaint();
             }
         });
@@ -75,9 +74,9 @@ public class MainWindow extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 Point position = new Point(e.getX() / MainGrid.squareWidth, e.getY() / MainGrid.squareHeight);
-                CodeBot botUnder = MainWindow.this.game.getMap().getBot(position);
+                CodeBot botUnder = MainWindow.this.currentGame.getMap().getBot(position);
                 if (botUnder != null) {
-                    final BotWindow bw = new BotWindow(botUnder, MainWindow.this.game);
+                    final BotWindow bw = new BotWindow(botUnder, MainWindow.this.currentGame);
                     bw.addWindowListener(new WindowAdapter() {
                         @Override
                         public void windowClosing(WindowEvent e) {
@@ -97,12 +96,22 @@ public class MainWindow extends JFrame {
 
         @Override
         protected Integer doInBackground() throws Exception {
-            while(!game.isFinished()) {
-                this.publish(0);
-                Thread.sleep(0);
-                game.step();
+            while (true) {
+                while (!currentGame.isFinished()) {
+                    this.publish(0);
+                    Thread.sleep(0);
+                    currentGame.step();
+                }
+                Scoreboard.gameFinished(currentGame);
+                if (Scoreboard.getGameCount() < Game.NUM_GAMES) {
+                    currentGame = new Game(random);
+                    Scoreboard.gameStarted();
+                    mainGrid.setGame(currentGame);
+                } else {
+                    new ScoreWindow().setVisible(true);
+                    return 0;
+                }
             }
-            return 0;
         }
 
         @Override
@@ -116,13 +125,10 @@ public class MainWindow extends JFrame {
         super.repaint();
         for (BotWindow window: windows){
             window.repaint();
-            Point position = game.getMap().getBotPosition(window.bot);
+            Point position = currentGame.getMap().getBotPosition(window.bot);
             mainGrid.addHighlight(position.x, position.y, Color.red);
         }
-        turnNumber.setText("Game " + game.getScoreboard().getGameCount() + " Turn " + game.getTurnCounter());
-        if (game.isFinished()){
-            new ScoreWindow(game.getScoreboard()).setVisible(true);
-        }
+        turnNumber.setText("Game " + Scoreboard.getGameCount() + " Turn " + currentGame.getTurnCounter());
     }
 
 }

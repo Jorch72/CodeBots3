@@ -1,4 +1,4 @@
-import controller.Scoreboard;
+import controller.ui.MainWindow;
 
 import java.util.Random;
 
@@ -7,6 +7,7 @@ public class Main {
 
 
     public static void main(String[] args) {
-        new Scoreboard(new Random()).start();
+        new MainWindow(new Random()).setVisible(true);
+
     }
 }

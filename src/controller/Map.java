@@ -15,6 +15,7 @@ public class Map {
     private final HashMap<CodeBot, Point> botPositions;
     private final HashMap<CodeBot, Point> futurePositions;
     private final HashMap<CodeBot, Direction> botDirections;
+
     public Map(Game parent, Random random){
         this.parent = parent;
         List<CodeBot> allBots = new ArrayList<CodeBot>(parent.getAllBots());
@@ -41,6 +42,7 @@ public class Map {
             botDirections.put(bot, d);
         }
     }
+
     public void move(CodeBot bot, Direction direction){
         Point newPosition = new Point(futurePositions.get(bot));
         newPosition.translate(direction.x, direction.y);
@@ -56,56 +58,46 @@ public class Map {
         }
         futurePositions.put(bot, newPosition);
     }
+
     public void rotate(CodeBot bot, int clockwise){
         Direction rotated = Direction.values()[(botDirections.get(bot).ordinal()+clockwise)%Direction.values().length];
         botDirections.put(bot, rotated);
     }
+
     public void resolveMovement(){
-        HashMap<Point, List<CodeBot>> futureLocations = new HashMap<Point, List<CodeBot>>();
-        for (CodeBot bot: futurePositions.keySet()){
+        Set<CodeBot> toResolve = new HashSet<CodeBot>();
+        HashMap<Point, CodeBot> nextLocations = new HashMap<Point, CodeBot>();
+        for (CodeBot bot: parent.getAllBots()){
             Point location = futurePositions.get(bot);
-            if (!futureLocations.containsKey(location)){
-                futureLocations.put(location, new ArrayList<CodeBot>());
-            }
-            futureLocations.get(location).add(bot);
-        }
-        boolean hasDuplicates = true;
-        while(hasDuplicates) {
-            hasDuplicates = false;
-            HashMap<Point, List<CodeBot>> locations = new HashMap<Point, List<CodeBot>>(futureLocations);
-            futureLocations.clear();
-            for (Point p : locations.keySet()) {
-                List<CodeBot> bots =  locations.get(p);
-                if (bots.size() > 1){
-                    for (CodeBot bot: bots){
-                        Point oldPosition = botPositions.get(bot);
-                        futurePositions.put(bot, oldPosition);
-                        if (!futureLocations.containsKey(oldPosition)){
-                            futureLocations.put(oldPosition, new ArrayList<CodeBot>());
-                        }
-                        futureLocations.get(oldPosition).add(bot);
-                    }
-                    hasDuplicates = true;
-                } else {
-                    if (futureLocations.containsKey(p)){
-                        futureLocations.get(p).addAll(bots);
-                    } else {
-                        futureLocations.put(p, bots);
-                    }
-                }
+            if (nextLocations.containsKey(location)){
+                toResolve.add(nextLocations.get(location));
+                toResolve.add(bot);
+            } else {
+                nextLocations.put(location, bot);
             }
         }
-        for (CodeBot bot: futurePositions.keySet()){
-            botPositions.put(bot, futurePositions.get(bot));
+        for (CodeBot bot: toResolve) {
+            revertBot(bot, nextLocations);
         }
         currentMap.clear();
-        for (CodeBot bot: botPositions.keySet()){
-            currentMap.put(botPositions.get(bot), bot);
+        for (Point p : nextLocations.keySet()) {
+            CodeBot b = nextLocations.get(p);
+            botPositions.put(b, p);
+            currentMap.put(p, b);
+            futurePositions.put(b, p);
         }
     }
 
-    public boolean botAt(Point p){
-        return currentMap.containsKey(p);
+    private void revertBot(CodeBot bot, HashMap<Point, CodeBot> nextLocations){
+        nextLocations.remove(futurePositions.get(bot));
+        Point reverted = botPositions.get(bot);
+        if (nextLocations.containsKey(reverted)){
+            CodeBot nextBot = nextLocations.get(reverted);
+            if (nextBot != bot) {
+                revertBot(nextBot, nextLocations);
+            }
+        }
+        nextLocations.put(reverted, bot);
     }
 
     public CodeBot getBot(Point p){

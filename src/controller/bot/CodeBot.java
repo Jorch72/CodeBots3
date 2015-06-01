@@ -41,7 +41,6 @@ public class CodeBot {
 
     public void addThreadToPool(int varNum, BotThread threadToAdd){
         threadPool.put(varNum, threadToAdd);
-        threadToAdd.addToExecution();
     }
 
     public boolean hasThreadInPool(int varNum){
@@ -145,7 +144,7 @@ public class CodeBot {
                     loyalties.put(loyalty, 0);
                 }
                 int newLoyalty = loyalties.get(loyalty)+1;
-                loyalties.put(loyalty, loyalties.get(loyalty));
+                loyalties.put(loyalty, newLoyalty);
                 max = Math.max(newLoyalty, max);
             }
         }

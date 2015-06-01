@@ -1,0 +1,11 @@
+Copy 5 C
+Copy 8 B
+Start C
+Move A // If you can't catch me, you can't modify me
+If 1=1 #3 #3 //Continue to execute the above line
+Start B
+Copy 4 A
+If 1=1 #6 #6 //Continue to execute the above line
+Flag
+Copy 5 A
+If 1=1 #9 #9 //Continue to execute the above line

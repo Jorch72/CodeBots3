@@ -64,7 +64,9 @@ public class BotVar {
 
     public void startThread(){
         if (!parent.hasThreadInPool(index)){
-            parent.addThreadToPool(index, new BotThread(parent, index));
+            BotThread thread = new BotThread(parent, index);
+            parent.addThreadToPool(index, thread);
+            thread.addToExecution();
         }
     }
 
@@ -86,8 +88,9 @@ public class BotVar {
     public void write(int value){
         if (writeCount > 1){
             this.value = parent.getRandom().nextInt(Game.MAX_INT);
+        } else {
+            this.value = value % 24;
         }
-        this.value = value%24;
     }
 
     public void resolveCopy(){

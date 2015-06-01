@@ -58,7 +58,6 @@ public class BotThread {
 
     public void increment(){
         BotVar var = getVariable(varNum);
-        var.write(var.read()+1 % Game.MAX_INT);
-        addToExecution();
+        var.write(var.read() +1 % Game.MAX_INT);
     }
 }
