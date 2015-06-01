@@ -3,6 +3,8 @@ package controller.code.lines;
 import controller.bot.BotThread;
 import controller.bot.Command;
 import controller.code.expressions.LineNumber;
+import controller.code.expressions.OpponentLineNumber;
+import controller.parser.BadExpressionException;
 
 public class LockLine extends Line{
     private final LineNumber lineNumber;
@@ -10,6 +12,9 @@ public class LockLine extends Line{
     private final String description;
 
     public LockLine(LineNumber lineNumber){
+        if (lineNumber instanceof OpponentLineNumber) {
+            throw new BadExpressionException("You cannot lock an opponent's line");
+        }
         this.lineNumber = lineNumber;
         description = "Lock "+lineNumber;
     }

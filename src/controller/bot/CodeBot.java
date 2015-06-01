@@ -110,6 +110,12 @@ public class CodeBot {
     }
 
     public void removeThreadFromPool(int varNum) {
+        for (BotVar var: variables){
+            var.unlock();
+        }
+        for (BotLine line: lines){
+            line.unlock();
+        }
         threadPool.remove(varNum);
     }
 

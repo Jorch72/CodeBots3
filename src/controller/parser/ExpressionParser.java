@@ -2,9 +2,7 @@ package controller.parser;
 
 import controller.Game;
 import controller.code.expressions.*;
-import controller.code.expressions.conditions.Conditional;
-import controller.code.expressions.conditions.EqualsCondition;
-import controller.code.expressions.conditions.LessThanCondition;
+import controller.code.expressions.conditions.*;
 
 public class ExpressionParser {
 
@@ -54,7 +52,16 @@ public class ExpressionParser {
 
     public static Conditional parseCondition(String condition){
         Conditional conditional;
-        if (condition.contains("<")){
+        if (condition.startsWith("!")){
+            String checkLocked = condition.substring(1);
+            if (isLineNumber(checkLocked)){
+                conditional = new LockedLineCondition(parseLineNumber(checkLocked));
+            } else {
+                conditional = new LockedVarCondition(parseVariable(checkLocked));
+            }
+        } else if (condition.startsWith("?")){
+            conditional = new HasThreadCondition(parseVariable(condition.substring(1)));
+        } else if (condition.contains("<")){
             int index = condition.indexOf('<');
             Value val1 = parseValue(condition.substring(0, index));
             Value val2 = parseValue(condition.substring(index+1));

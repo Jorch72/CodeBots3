@@ -25,6 +25,11 @@ public class BotVar {
         value = 0;
     }
 
+    public void unlock(){
+        currentLock = null;
+        futureLock = null;
+    }
+
     public boolean isLocked(){
         return currentLock != null;
     }

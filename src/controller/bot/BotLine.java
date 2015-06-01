@@ -23,6 +23,10 @@ public class BotLine {
         writeCount = 0;
     }
 
+    public void unlock(){
+        currentLock = null;
+    }
+
     public boolean isLocked(){
         return currentLock != null;
     }

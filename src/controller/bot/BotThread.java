@@ -2,12 +2,17 @@ package controller.bot;
 
 import controller.Game;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class BotThread {
     private final CodeBot parent;
     private final int varNum;
+    private final Set<Integer> executedLines;
     public BotThread(CodeBot parent, int varNum){
         this.parent = parent;
         this.varNum = varNum;
+        executedLines = new HashSet<Integer>();
     }
 
     public BotVar getVariable(int varNum){
@@ -17,7 +22,6 @@ public class BotThread {
     public BotLine getLine(int varLine){
         return parent.getLine(varLine, this);
     }
-
 
     public void movePointer(int position){
         getVariable(varNum).write(position);
@@ -49,7 +53,11 @@ public class BotThread {
     }
 
     public void addToExecution(){
-        getLine(getVariable(varNum).read()).read().perform(this);
+        int lineNumber = getVariable(varNum).read();
+        if (executedLines.contains(lineNumber))
+            return;
+        getLine(lineNumber).read().perform(this);
+        executedLines.add(lineNumber);
     }
 
     public void addCommand(Command command){
@@ -57,6 +65,7 @@ public class BotThread {
     }
 
     public void increment(){
+        executedLines.clear();
         BotVar var = getVariable(varNum);
         var.write(var.read() +1 % Game.MAX_INT);
     }
