@@ -1,0 +1,12 @@
+Copy 5 B
+Start B
+Lock C
+Stop D
+Copy A+1 A
+Lock #A
+If A=0 #8 #10
+Copy 4 B
+Flag
+Lock C
+Lock D
+Lock B
