@@ -1,12 +1,6 @@
-Copy 5 B
-Start B
-Lock C
-Stop D
-Copy A+1 A
+Copy 5 B //Designating that the B thread will start on line 5
+Start B //Starting the B thread
+Lock C //Preventing C from being used
+Copy A+1 A //The two threads are offset, meaning that the two threads shouldn't access this at the same time
 Lock #A
-If A=0 #8 #10
-Copy 4 B
-Flag
-Lock C
-Lock D
-Lock B
+Copy 2 B
