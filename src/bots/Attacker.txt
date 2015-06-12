@@ -1,5 +1,5 @@
 Copy A+1 A // Increment A
 Move A //Move in the Ath direction
-Rotate A //Rotate A times
+Turn A //Rotate A times
 Copy #8 *#A //Copy my flag into a random line
 Copy 23 D //Loop back to the beginning.  (I use 23 here as threads auto-increment)

@@ -9,7 +9,7 @@ public class RotateLine extends Line{
     private final String description;
     public RotateLine(Value value){
         this.value = value;
-        this.description = "Rotate "+value;
+        this.description = "Turn "+value;
     }
 
     @Override

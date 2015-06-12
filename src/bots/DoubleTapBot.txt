@@ -1,0 +1,24 @@
+Lock D          //Thread D locks itself
+Copy 6 A        //Thread A will start line 6
+Start A
+Copy 13 B       //Thread B will start line 13
+Start B
+Copy 20 D       //Moving Thread D to an other part of the program
+Lock A          //Thread A locks itself and the line it will be using
+Lock #11
+Lock #12
+Lock #13
+Move C          //Move in a pseudo random direction
+Turn 1          //always turn to the right
+If 1=1 #10 #10  //return to Move C
+Lock B          //Thread B locks itself and the line it will be using
+Lock #13
+Lock #14
+Copy #18 *#C    //Copy a flag to the Cth line of the opponent
+If 1=1 #16 #16  //jump back to the copy
+Flag
+Flag
+Copy C+1 C      //Increment C
+Copy #19 *#C+1  //Copy a flag to the Cth+1 line of the opponent
+If 1=1 #20 #20  //jump back to the increment
+Flag

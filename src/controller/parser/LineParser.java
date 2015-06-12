@@ -37,7 +37,7 @@ public class LineParser {
         } else if (command.equals("move")){
             checkNumParams(command, parameters, 1);
             line = new MoveLine(ExpressionParser.parseValue(parameters[0]));
-        } else if (command.equals("rotate")){
+        } else if (command.equals("turn")){
             checkNumParams(command, parameters, 1);
             line = new RotateLine(ExpressionParser.parseValue(parameters[0]));
         } else if (command.equals("lock")){
