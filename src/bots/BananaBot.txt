@@ -1,0 +1,29 @@
+$d     If !*D $d1 $d0
+$d0    Copy 24 *D
+$d1    If !D $d2 $start
+$d2    If !*B $d5 $d3
+$d3    Copy 24 *B
+$d4    Copy $d D
+
+$start Lock D             //Banana's like to split.
+       Copy $a A
+       Start A
+       Copy $b B
+       Start B
+       Lock $flag
+
+$d5    Copy $start *C     //It's okay if enemy messes up our start.
+       Copy $d d
+
+$a     Lock A
+$a1    Move C
+       Turn 1
+       Copy $a1 A
+
+$b     Lock B
+$b0    Copy C+1 C
+       If !*#C $b0 $b1    //Banana's are good at slipping.
+$b1    Copy $flag *#C
+$b2    Copy $b0 B
+
+$flag  Flag

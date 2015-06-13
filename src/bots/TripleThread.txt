@@ -1,0 +1,9 @@
+Move 0
+Start A
+Start B
+$loop Copy #A+9 *#C
+Move C
+Copy #A+9 *#C
+Turn C
+Copy C+1 C
+If 0=0 $loop $loop

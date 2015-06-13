@@ -1,0 +1,23 @@
+Lock $flag              // lock the only flag line, super important!
+Lock D                  // lock thread D
+Copy 10 A
+Start A                 // start thread A at $Astart
+Copy 17 B
+Start B                 // start thread B at $Bstart
+Lock $D1                // lock thread D lines
+Lock $D2                // thread D should be safe on turn 8
+$D1 Turn C              // Spin in place, once every 2 turns
+$D2 If 0=0 $D1 $D1      // thread D loop
+$Astart Lock A          // thread A starts here, locks itself
+Lock $A1                // lock thread A lines
+Lock $A2
+Lock $A3                // thread A should be safe on turn 7
+$A1 Copy $flag *#C      // ATTACK! once every 3 turns
+$A2 Copy C+1 C          // increment C, used for attacks and turning
+$A3 If 0=0 $A1 $A1      // thread A loop
+$Bstart Lock B          // thread B starts here, locks itself
+Lock $B1                // lock thread B lines
+Lock $B2                // thread B should be safe on turn 8
+$B1 Copy $flag *#C+12   // ATTACK! once every 2 turns
+$B2 If 0=0 $B1 $B1      // thread B loop
+$flag Flag

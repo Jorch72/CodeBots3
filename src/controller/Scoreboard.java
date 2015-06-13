@@ -20,6 +20,8 @@ public class Scoreboard {
     public static void gameFinished(Game game){
         for (CodeBot bot: game.getAllBots()){
             String winner = bot.getLoyalty();
+            if (winner.isEmpty())
+                continue;
             if (!points.containsKey(winner)){
                 points.put(winner, 0);
             }

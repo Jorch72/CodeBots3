@@ -8,24 +8,25 @@ public class LineParser {
     public static Line[] buildLines(String[] code, String botName){
         Line[] lines = new Line[Game.MAX_INT];
         for (int i = 0; i < code.length; i++){
-            int split = code[i].indexOf(' ');
-            String command;
-            String[] params;
-            if (split != -1) {
-                command = code[i].substring(0, split);
-                params = code[i].substring(split + 1).split(" ");
-            } else {
-                command = code[i];
-                params = new String[0];
+            try {
+                int split = code[i].indexOf(' ');
+                String command;
+                String[] params;
+                if (split != -1) {
+                    command = code[i].substring(0, split);
+                    params = code[i].substring(split + 1).split(" ");
+                } else {
+                    command = code[i];
+                    params = new String[0];
+                }
+                if (command.equals("flag")) {
+                    lines[i] = buildLine(command, botName);
+                } else {
+                    lines[i] = buildLine(command, params);
+                }
+            } catch(Exception e){
+                throw new BadExpressionException("\nException thrown on line "+i+" in bot "+botName+".\nLine in error is:\n"+code[i], e);
             }
-            if (command.equals("flag")){
-                lines[i] = buildLine(command, botName);
-            } else {
-                lines[i] = buildLine(command, params);
-            }
-        }
-        for (int i = code.length; i < lines.length; i++){
-            lines[i] = buildLine("flag", botName);
         }
         return lines;
     }

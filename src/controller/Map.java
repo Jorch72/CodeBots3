@@ -26,7 +26,7 @@ public class Map {
         futurePositions = new HashMap<CodeBot, Point>();
         botDirections = new HashMap<CodeBot, Direction>();
 
-        int botsPerLine = (int)Math.round(Math.sqrt(allBots.size()));
+        int botsPerLine = (int)Math.round(Math.sqrt(allBots.size())/2);
         width = botsPerLine*4;
         height = allBots.size()/botsPerLine;
 
