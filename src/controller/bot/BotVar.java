@@ -59,7 +59,7 @@ public class BotVar {
         if (futureUnlock) {
             currentLock = null;
         } else {
-            if (!multipleLockAttempts) {
+            if (futureLock!= null && !multipleLockAttempts) {
                 currentLock = futureLock;
             }
         }

@@ -55,7 +55,7 @@ public class BotLine {
         if (futureUnlock) {
             currentLock = null;
         } else {
-            if (!multipleLockAttempts) {
+            if (futureLock != null && !multipleLockAttempts) {
                 currentLock = futureLock;
             }
         }
