@@ -1,0 +1,28 @@
+    Lock D
+    Copy $a A
+    Start A
+    Copy $b B
+    Start B
+
+$d  Lock $d0
+    Lock $d1
+$d0 Copy $flag *#C+1
+$d1 If 1=1 $d0 $d0
+
+$a  Lock A
+    Lock $a0
+    Lock $a1
+    Lock $a2
+$a0 Copy $flag *#C
+$a1 Copy C+2 C
+$a2 If !*#C $a1 $a0
+
+$b  Lock B
+    Lock $b0
+    Lock $b1
+    Lock $b2
+$b0 Move C
+$b1 Turn 1
+$b2 If 1=1 $b0 $b0
+
+$flag Flag

@@ -35,9 +35,9 @@ public class BotParser {
             for (String label: replacements.keySet()){
                 if (line.contains(label)){
                     if (line.startsWith("copy") && !line.contains("#") && line.lastIndexOf("$")==line.indexOf("$")){
-                        line = line.replaceAll("\\"+label, replacements.get(label));
+                        line = line.replaceAll("\\"+label+"\\b", replacements.get(label));
                     } else {
-                        line = line.replaceAll("\\"+label, "#"+replacements.get(label));
+                        line = line.replaceAll("\\"+label+"\\b", "#"+replacements.get(label));
                     }
                 }
             }
