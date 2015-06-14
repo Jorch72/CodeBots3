@@ -1,0 +1,23 @@
+    Lock D              // Lock D thread
+    Copy $AS A
+    Start A             // Start A thread at $AS
+    Copy 10 D           // Jump to D startup code
+$DC Copy $DF *#B        // four attacks in a row
+    Copy $DF *#B+6
+    Copy $DF *#B+12
+    Copy $DF *#B+18
+    Turn 1              // if four wasn't enough, too bad
+$DM Move 0              // move forward ...
+    If ?*D $DC $DM      // until we hit a live target
+$DF Flag                // Flag to copy and delay locking
+    Lock #B+3           // Lock the D thread's lines
+    If B<8 $DF $DM      // jump to `Move 0` when D thread is safe
+$AS Lock A
+$AL Lock #B+18
+    Copy B+1 B
+    If B<5 $AL $AD
+$AR Copy 0 B
+$AD Copy B+1 B
+    Copy $AF #B
+    If B<18 $AD $AR
+$AF Flag

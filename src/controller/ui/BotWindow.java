@@ -42,7 +42,7 @@ public class BotWindow extends JFrame {
         vars.setText(varChars);
         Set<Integer> threadIndices = new HashSet<Integer>();
         for (BotThread thread: bot.getThreads()){
-            threadIndices.add(thread.getParent().getVariable(thread.getVarNum()).read());
+            threadIndices.add(thread.getParent().getVariable(thread.getVarNum()).read(thread));
         }
         for (int i = 0; i < Game.MAX_INT; i++){
             Color background = Color.white;

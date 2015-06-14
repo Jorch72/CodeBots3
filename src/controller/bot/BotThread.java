@@ -53,7 +53,7 @@ public class BotThread {
     }
 
     public void addToExecution(){
-        int lineNumber = getVariable(varNum).read();
+        int lineNumber = getVariable(varNum).read(this);
         if (executedLines.contains(lineNumber))
             return;
         getLine(lineNumber).read().perform(this);
@@ -67,6 +67,6 @@ public class BotThread {
     public void increment(){
         executedLines.clear();
         BotVar var = getVariable(varNum);
-        var.write(var.read() +1 % Game.MAX_INT);
+        var.write(var.read(this) +1 % Game.MAX_INT);
     }
 }

@@ -19,7 +19,7 @@ public class CopyVarLine extends Line{
         bot.addCommand(new Command() {
             @Override
             public void execute() {
-                to.getVar(bot).willWrite();
+                to.getVar(bot).willWriteWith(bot);
             }
 
             @Override

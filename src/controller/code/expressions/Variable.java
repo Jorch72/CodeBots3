@@ -14,7 +14,7 @@ public class Variable extends Value {
 
     @Override
     public int getValue(BotThread thread) {
-        return getVar(thread).read();
+        return getVar(thread).read(thread);
     }
 
 

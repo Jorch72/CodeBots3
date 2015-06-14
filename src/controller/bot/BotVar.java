@@ -13,6 +13,7 @@ public class BotVar {
     private final int index;
     private final CodeBot parent;
     private int value;
+    private BotThread willWriteWith;
     public BotVar(int index, CodeBot parent){
         this.index = index;
         this.parent = parent;
@@ -79,12 +80,13 @@ public class BotVar {
         return parent.hasThreadInPool(index);
     }
 
-    public void willWrite(){
+    public void willWriteWith(BotThread thread){
         writeCount++;
+        this.willWriteWith = thread;
     }
     
-    public int read(){
-        if (writeCount > 0){
+    public int read(BotThread thread){
+        if (writeCount > 1 || (thread != willWriteWith && writeCount == 1)){
             return parent.getRandom().nextInt(Game.MAX_INT);
         }
         return value;
