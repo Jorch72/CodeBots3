@@ -68,9 +68,15 @@ public class ExpressionParser {
             conditional = new LessThanCondition(val1, val2);
         } else {
             int index = condition.indexOf('=');
-            Value val1 = parseValue(condition.substring(0, index));
-            Value val2 = parseValue(condition.substring(index+1));
-            conditional = new EqualsCondition(val1, val2);
+            if (condition.contains("#")){
+                LineNumber line1 = parseLineNumber(condition.substring(0, index));
+                LineNumber line2 = parseLineNumber(condition.substring(index+1));
+                conditional = new LineEqualsCondition(line1, line2);
+            } else {
+                Value val1 = parseValue(condition.substring(0, index));
+                Value val2 = parseValue(condition.substring(index + 1));
+                conditional = new EqualsCondition(val1, val2);
+            }
         }
         return conditional;
     }

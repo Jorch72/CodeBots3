@@ -1,0 +1,17 @@
+   Lock D
+   Lock $f
+   Copy 16 C
+$S If ?*D $1 $2
+   Move 1
+   Copy $S D
+$f Flag
+$1 Stop *D
+$2 If ?*A $3 $4
+$3 Stop *A
+$4 If ?*B $5 $6
+$5 Stop *B
+$6 Copy $f *#C
+   Copy C+1 C
+   If *#C=#C $E $6
+   Copy 2 D
+$E Start *D
